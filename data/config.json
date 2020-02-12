@@ -1,0 +1,7 @@
+{
+  "provisioned": false,
+  "mqtt_host": "",
+  "mqtt_port": 1883,
+  "mqtt_login": "",
+  "mqtt_pass": ""
+}
