@@ -18,7 +18,7 @@ WiFiManagerParameter custom_mqtt_pass("mqtt_pass", "MQTT Password", "", 40, "typ
 elapsedMillis reconnectTimeElapsed;
 const unsigned int RECONNECT_DELAY = 5000;
 
-void _saveConfigCallback () {
+void _saveConfigCallback() {
     logger::debug(F("wifi: connection established, set network mode to provisioned"));
     config::conf.provisioned = true;
     strcpy(config::conf.mqtt_host, custom_mqtt_host.getValue());
@@ -60,7 +60,8 @@ void setup() {
 }
 
 void handle() {
-    if (WiFi.status() == WL_CONNECTED) return;
+    if (WiFi.status() == WL_CONNECTED)
+        return;
 
     if (reconnectTimeElapsed >= RECONNECT_DELAY) {
         reconnectTimeElapsed = 0; // reset timer

@@ -21,12 +21,20 @@ void print_file_contents(const char *name) {
     Serial.println();
 }
 
-class elapsedMillis  // modified version of https://github.com/pfeerick/elapsedMillis
+class elapsedMillis // modified version of https://github.com/pfeerick/elapsedMillis
 {
-	private:
-		uint16_t ms;
-	public:
-		elapsedMillis(void) { ms = millis(); }
-		operator uint16_t () const { return millis() - ms; }
-		elapsedMillis & operator = (uint16_t val) { ms = millis() - val; return *this; }
+  private:
+    uint16_t ms;
+
+  public:
+    elapsedMillis(void) {
+        ms = millis();
+    }
+    operator uint16_t() const {
+        return millis() - ms;
+    }
+    elapsedMillis &operator=(uint16_t val) {
+        ms = millis() - val;
+        return *this;
+    }
 };
