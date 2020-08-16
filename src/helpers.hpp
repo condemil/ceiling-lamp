@@ -5,6 +5,7 @@
 
 #include "logger.hpp"
 
+namespace helpers {
 void print_file_contents(const char *name) {
     File f = SPIFFS.open(name, "r");
     if (!f) {
@@ -38,3 +39,4 @@ class elapsedMillis // modified version of https://github.com/pfeerick/elapsedMi
         return *this;
     }
 };
+} // namespace helpers

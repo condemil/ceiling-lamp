@@ -2,18 +2,20 @@
 
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <WiFiClient.h>
 
 #include "config.hpp"
+#include "helpers.hpp"
 #include "logger.hpp"
 #include "state.hpp"
-#include "wifi.hpp"
 
 namespace mqtt {
 char MQTT_TOPIC_STATE[15];
 char MQTT_TOPIC_COMMAND[20];
 
-PubSubClient client(wifi::espClient);
-elapsedMillis reconnectTimeElapsed;
+WiFiClient _esp_client;
+PubSubClient _client(_esp_client);
+helpers::elapsedMillis _reconnect_time_elapsed;
 const unsigned int RECONNECT_DELAY = 5000;
 
 void _publish() {
@@ -26,7 +28,7 @@ void _publish() {
     char buffer[128];
     serializeJson(doc, buffer);
 
-    client.publish(MQTT_TOPIC_STATE, buffer, true);
+    _client.publish(MQTT_TOPIC_STATE, buffer, true);
 }
 
 void _callback(char *topic, byte *payload, unsigned int length) {
@@ -77,30 +79,31 @@ void _callback(char *topic, byte *payload, unsigned int length) {
 void _reconnect() {
     logger::debugln(F("mqtt: attempting to connect"));
 
-    if (client.connect(config::HOSTNAME, config::conf.mqtt_login, config::conf.mqtt_pass)) {
+    if (_client.connect(config::HOSTNAME, config::conf.mqtt_login, config::conf.mqtt_pass)) {
         logger::debugln(F("mqtt: connected"));
-        client.subscribe(MQTT_TOPIC_COMMAND);
+        _client.subscribe(MQTT_TOPIC_COMMAND);
         logger::debugf("mqtt: subscribed to %s\n", MQTT_TOPIC_COMMAND);
     } else {
-        logger::debugf("mqtt: connect failed, rc=%d try again in %u seconds\n", client.state(), RECONNECT_DELAY / 1000);
+        logger::debugf(
+            "mqtt: connect failed, rc=%d try again in %u seconds\n", _client.state(), RECONNECT_DELAY / 1000);
     }
 }
 
 void setup() {
     sprintf(MQTT_TOPIC_STATE, config::MQTT_TOPIC_STATE_FORMAT, ESP.getChipId());
     sprintf(MQTT_TOPIC_COMMAND, config::MQTT_TOPIC_COMMAND_FORMAT, ESP.getChipId());
-    client.setServer(config::conf.mqtt_host, config::conf.mqtt_port);
-    client.setCallback(_callback);
+    _client.setServer(config::conf.mqtt_host, config::conf.mqtt_port);
+    _client.setCallback(_callback);
 }
 
 void handle() {
-    if (client.connected()) {
-        client.loop();
+    if (_client.connected()) {
+        _client.loop();
         return;
     }
 
-    if (reconnectTimeElapsed >= RECONNECT_DELAY) {
-        reconnectTimeElapsed = 0; // reset timer
+    if (_reconnect_time_elapsed >= RECONNECT_DELAY) {
+        _reconnect_time_elapsed = 0; // reset timer
         _reconnect();
     }
 }
