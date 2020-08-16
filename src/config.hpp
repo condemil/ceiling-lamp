@@ -33,14 +33,14 @@ void setup() {
     logger::debugf("Hostname: %s\n", config::HOSTNAME);
 
     if (!SPIFFS.begin()) {
-        logger::error(F("config: failed to mount FS"));
+        logger::errorln(F("config: failed to mount FS"));
         return;
     }
 
     File file = SPIFFS.open(filename, "r");
 
     if (!file) {
-        logger::error(F("config: failed to open file to read"));
+        logger::errorln(F("config: failed to open file to read"));
         return;
     }
 
@@ -48,7 +48,7 @@ void setup() {
     DeserializationError error = deserializeJson(doc, file);
 
     if (error) {
-        logger::error(F("config: failed to deserialize"));
+        logger::errorln(F("config: failed to deserialize"));
         file.close();
         return;
     }
@@ -66,7 +66,7 @@ void persist() {
     File file = SPIFFS.open(filename, "w");
 
     if (!file) {
-        logger::error(F("config: failed to open file to write"));
+        logger::errorln(F("config: failed to open file to write"));
         return;
     }
 
@@ -81,12 +81,12 @@ void persist() {
 
     // Serialize JSON to file
     if (serializeJson(doc, file) == 0) {
-        logger::error(F("config: failed to write file"));
+        logger::errorln(F("config: failed to write file"));
     }
 
     // Close the file
     file.close();
-    logger::debug(F("config: persisted"));
+    logger::debugln(F("config: persisted"));
 }
 
 void truncate() {

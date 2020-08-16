@@ -19,7 +19,7 @@ elapsedMillis reconnectTimeElapsed;
 const unsigned int RECONNECT_DELAY = 5000;
 
 void _saveConfigCallback() {
-    logger::debug(F("wifi: connection established, set network mode to provisioned"));
+    logger::debugln(F("wifi: connection established, set network mode to provisioned"));
     config::conf.provisioned = true;
     strcpy(config::conf.mqtt_host, custom_mqtt_host.getValue());
     config::conf.mqtt_port = atol(custom_mqtt_port.getValue());
@@ -32,7 +32,7 @@ void _connect() {
     WiFi.begin();
 
     if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-        logger::error(F("wifi: connection failed"));
+        logger::errorln(F("wifi: connection failed"));
     }
 
     logger::debugf("wifi: connected, ip address: %s\n", WiFi.localIP().toString().c_str());
@@ -40,7 +40,7 @@ void _connect() {
 
 void setup() {
     if (!config::conf.provisioned) {
-        logger::debug(F("wifi: creating AP for wifi provisioning, connect to http://192.168.4.1"));
+        logger::debugln(F("wifi: creating AP for wifi provisioning, connect to http://192.168.4.1"));
         WiFiManager wifiManager;
 
         wifiManager.setDebugOutput(false);
@@ -65,7 +65,7 @@ void handle() {
 
     if (reconnectTimeElapsed >= RECONNECT_DELAY) {
         reconnectTimeElapsed = 0; // reset timer
-        logger::error(F("wifi: connection lost, reconnecting"));
+        logger::errorln(F("wifi: connection lost, reconnecting"));
         _connect();
     }
 }

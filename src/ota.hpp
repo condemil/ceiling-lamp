@@ -14,13 +14,13 @@ void setup() {
 
     ArduinoOTA.onStart([]() {
         if (ArduinoOTA.getCommand() == U_FLASH) {
-            logger::debug(F("Start updating sketch"));
+            logger::debugln(F("Start updating sketch"));
         } else {
-            logger::debug(F("Updating filesystem is unsupported"));
+            logger::debugln(F("Updating filesystem is unsupported"));
         }
     });
 
-    ArduinoOTA.onEnd([]() { logger::debug(F("\nEnd")); });
+    ArduinoOTA.onEnd([]() { logger::debugln(F("\nEnd")); });
 
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
         logger::debugf("Progress: %u%%\r", (progress / (total / 100)));
@@ -29,15 +29,15 @@ void setup() {
     ArduinoOTA.onError([](ota_error_t error) {
         logger::debugf("Error[%u]: ", error);
         if (error == OTA_AUTH_ERROR)
-            logger::debug(F("Auth Failed"));
+            logger::debugln(F("Auth Failed"));
         else if (error == OTA_BEGIN_ERROR)
-            logger::debug(F("Begin Failed"));
+            logger::debugln(F("Begin Failed"));
         else if (error == OTA_CONNECT_ERROR)
-            logger::debug(F("Connect Failed"));
+            logger::debugln(F("Connect Failed"));
         else if (error == OTA_RECEIVE_ERROR)
-            logger::debug(F("Receive Failed"));
+            logger::debugln(F("Receive Failed"));
         else if (error == OTA_END_ERROR)
-            logger::debug(F("End Failed"));
+            logger::debugln(F("End Failed"));
     });
 
     ArduinoOTA.begin();

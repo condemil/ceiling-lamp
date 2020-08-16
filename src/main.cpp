@@ -10,9 +10,8 @@
 elapsedMillis debugTimer;
 
 void setup() {
-    Serial.begin(115200);
-    logger::setup(Serial);
-    logger::debug(F("\nmain: started"));
+    logger::setup();
+    logger::debugln(F("\nmain: started"));
 
     config::setup();
     wifi::setup();
@@ -20,7 +19,7 @@ void setup() {
     state::setup();
     ota::setup();
 
-    logger::debug(F("main: setup is over"));
+    logger::debugln(F("main: setup is over"));
 }
 
 void loop() {

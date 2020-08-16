@@ -31,7 +31,7 @@ void _publish() {
 
 void _callback(char *topic, byte *payload, unsigned int length) {
     if (length >= MQTT_MAX_PACKET_SIZE) {
-        logger::error(F("mqtt: payload is too long"));
+        logger::errorln(F("mqtt: payload is too long"));
         return;
     }
 
@@ -41,7 +41,7 @@ void _callback(char *topic, byte *payload, unsigned int length) {
     DeserializationError error = deserializeJson(doc, payload);
 
     if (error) {
-        logger::error(F("mqtt: failed to deserialize payload"));
+        logger::errorln(F("mqtt: failed to deserialize payload"));
         return;
     }
 
@@ -75,10 +75,10 @@ void _callback(char *topic, byte *payload, unsigned int length) {
 }
 
 void _reconnect() {
-    logger::debug(F("mqtt: attempting to connect"));
+    logger::debugln(F("mqtt: attempting to connect"));
 
     if (client.connect(config::HOSTNAME, config::conf.mqtt_login, config::conf.mqtt_pass)) {
-        logger::debug(F("mqtt: connected"));
+        logger::debugln(F("mqtt: connected"));
         client.subscribe(MQTT_TOPIC_COMMAND);
         logger::debugf("mqtt: subscribed to %s\n", MQTT_TOPIC_COMMAND);
     } else {

@@ -8,7 +8,7 @@
 void print_file_contents(const char *name) {
     File f = SPIFFS.open(name, "r");
     if (!f) {
-        logger::error(F("helpers: failed to open file to read"));
+        logger::errorln(F("helpers: failed to open file to read"));
         return;
     }
 
